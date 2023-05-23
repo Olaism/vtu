@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+    <h5 class="mb-3 pb-3 text-center">{{ user.username|title }} - profile</h5>
+    <a href="{% url 'profile:update' %}" class="btn btn-outline-info my-3">Edit profile</a>
+    <div class="row justify-content-start mb-3 ml-1">
+        <div class="col-12">
+            <div class="row justify-content-start">
+                <div class="col-2 py-2 bg-info text-light">
+                    First Name: 
+                </div>
+                <div class="col text-{% if user.first_name %}info{% else %}danger{% endif %}">
+                    {% if user.first_name %}{{ user.first_name }}{% else %}Not found{% endif %}
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-2 py-2 bg-info text-light">
+                    Last Name: 
+                </div>
+                <div class="col text-{% if user.last_name %}info{% else %}danger{% endif %}">
+                    {% if user.last_name %}{{ user.last_name }}{% else %}Not found{% endif %}
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-2 py-2 bg-info text-light">
+                    Email: 
+                </div>
+                <div class="col text-info">
+                    {{ user.email }}
+                </div>
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-2 py-2 bg-info text-light">
+                    Phone: 
+                </div>
+                {% if user.profile.phone %}
+                    <div class="col text-info">{{ user.profile.phone }}</div>
+                {% else %}
+                    <div class="col text-danger">Not found</div>
+                {% endif %}
+            </div>
+            <div class="row justify-content-start">
+                <div class="col-2 py-2 bg-info text-light">
+                    Current Balance: 
+                </div>
+                <div class="col">
+                    {% if user.profile.balance < 1000 %}
+                        <span class="text-danger">{{ user.profile.balance }}</span>
+                    {% else %}
+                        <span class="text-success">{{ user.profile.balance }}</span>
+                    {% endif %}
+                </div>
+            </div>            
+        </div>
+    </div>
+    <div class="row justify-content-start">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Transactions
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Detail</th>
+                            <th scope="col">Amount</th>
+                            <th class="col">Status</th>
+                            <th scope="col">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for tran in user.profile.transactions %}
+                                <tr>
+                                    <th scope="row">{{ tran.detail }}</th>
+                                    <td>{{ tran.amount }}</td>
+                                    {% if tran.status %}
+                                        <td class="text-success">Success</td>
+                                    {% else %}
+                                        <td class="text-danger">Fail</td>
+                                    {% endif %}
+                                    <td>{{ tran.created_at }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-primary bg-secondary">No transactions found</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
